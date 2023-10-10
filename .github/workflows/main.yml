@@ -28,9 +28,4 @@ jobs:
             $global:progressPreference = 'silentlyContinue'
             cmd /c setup.bat
     - name: RDP Started Successfully! Now you can close the tab.
-      run: |
-            Start-Process -FilePath ".\ngrok\ngrok.exe" -ArgumentList "tcp 3389"
-            $Response = ConvertFrom-Json(Invoke-WebRequest -Uri "http://127.0.0.1:4040/api/tunnels")
-            $Fulladdress = ($Response.tunnels.public_url -split "tcp://")[1]
-            Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText $Fulladdress -Force)
-            echo "Full address: $Fulladdress"
+      run: .\ngrok\ngrok.exe tcp 3389
