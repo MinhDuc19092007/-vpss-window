@@ -17,16 +17,15 @@ jobs:
       run: .\ngrok\ngrok.exe authtoken $Env:NGROK_AUTH_TOKEN
       env:
         NGROK_AUTH_TOKEN: ${{ secrets.NGROK_AUTH_TOKEN }}
-    - name: Enabling RDP Access...
-      run: | 
-        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server'-name "fDenyTSConnections" -Value 0
-        Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
-        Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
-        Start-Process Powershell -ArgumentList '-Noexit -Command ".\ngrok\ngrok.exe tcp --region ap 3389"'
-        $Response = ConvertFrom-Json(Invoke-WebRequest -Uri "http://127.0.0.1:4040/api/tunnels")
-        $Fulladdress = ($Response.tunnels.public_url -split "tcp://")[1]
-        echo "Full address: $Fulladdress"
     - name: Setup VPS...
       run: cmd /c setup.bat
-    - name: Succesfully
-      run: .\ngrok\ngrok.exe tcp 3389
+    - name: Enabling RDP Access...
+      run: |
+        Start-Process -FilePath ".\ngrok\ngrok.exe" -ArgumentList "tcp 3389"
+        $Response = ConvertFrom-Json(Invoke-WebRequest -Uri "http://127.0.0.1:4040/api/tunnels")
+        $Fulladdress = ($Response.tunnels.public_url -split "tcp://")[1]
+        Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText $Pwd -Force)
+        echo "RDP INFORMATION"
+        echo "Full address: $Fulladdress"
+        echo "User: runneradmin"
+        echo "Pwd: $Pwd"
