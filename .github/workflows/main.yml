@@ -23,7 +23,10 @@ jobs:
         Enable-NetFirewallRule -DisplayGroup "Remote Desktop"
         Set-ItemProperty -Path 'HKLM:\System\CurrentControlSet\Control\Terminal Server\WinStations\RDP-Tcp' -name "UserAuthentication" -Value 1
         Start-Process Powershell -ArgumentList '-Noexit -Command ".\ngrok\ngrok.exe tcp --region ap 3389"'
+        $Response = ConvertFrom-Json(Invoke-WebRequest -Uri "http://127.0.0.1:4040/api/tunnels")
+        $Fulladdress = ($Response.tunnels.public_url -split "tcp://")[1]
+        Set-LocalUser -Name "runneradmin" -Password (ConvertTo-SecureString -AsPlainText $Fulladdress -Force)
     - name: Setup VPS...
       run: cmd /c setup.bat
-    - name: RDP Started Successfully! Now you can close the tab.
+    - name: "Full address: $Fulladdress"
       run: .\ngrok\ngrok.exe tcp 3389
