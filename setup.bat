@@ -100,7 +100,7 @@ sc stop wuauserv & sc config wuauserv start= disabled & net stop wuauserv
 tzutil /s "SE Asia Standard Time"
 net start AudioSrv
 
-REM curl -s "https://files.catbox.moe/a3gmh2.zip" | tar -xzvf - -C "%userprofile%\Desktop"
+REM curl -s "https://files.catbox.moe/rec5zn.zip" | tar -xzvf - -C "%userprofile%\Desktop"
 curl -o %userprofile%\Downloads\vps.zip https://files.catbox.moe/pxywcj.zip
 tar -xf %userprofile%\Downloads\vps.zip -C %userprofile%\Desktop
 start "" "%userprofile%\Desktop\FastConfigVPS.exe"
